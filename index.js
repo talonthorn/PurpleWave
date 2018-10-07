@@ -12,7 +12,7 @@ const connection = config.db.get;
 
 connection.connect(function(err) {
    if (err) throw err
-   console.log("Connected to mySql.")
+   console.log("Connected to mySql")
 });
 
 app.use(bodyParser.json());
@@ -20,7 +20,7 @@ app.use(bodyParser.urlencoded({
    extended: true
 }));
 
-var server = app.listen(7775, function() {
+var server = app.listen(7776, function() {
    var port = server.address().port;
 
    console.log("Listening at %s", port);
@@ -50,10 +50,30 @@ app.get("/cats", function(req, res) {
 
 //retreive single record
 app.get("/cats/:id", function(req, res) {
-   connection.query("select * from Cats where Cindex=?", [req.params.id], function (error, results, fields) {
+   var params = req.params;
+   connection.query("select * from Cats where Cindex=?", [params.id], function (error, results, fields) {
+      if (error) throw error;
+      res.status(200).end(JSON.stringify(results));
+   });
+});
+
+//update a record
+app.put('/cats', function (req, res) {
+   var params = req.body;
+   console.log("Update record ", params.id, ": Origin=", params.origin);
+   connection. query('update Cats set Origin=? where Cindex=?', [params.origin, params.id], function (error, results, fields) {
       if (error) throw error;
       res.status(201).end(JSON.stringify(results));
    });
 });
 
+//delete a record
+app.delete('/cats/:id', function (req, res) {
+   var params = req.params;
+   console.log('Delete record: ', params.id);
+   connection.query('delete from Cats where Cindex=?', [params.id], function (error, results, fields) {
+      if (error) throw error;
+      res.status(201).end('Record has been deleted.');
+   });
+});
 
