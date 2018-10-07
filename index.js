@@ -20,21 +20,31 @@ app.use(bodyParser.urlencoded({
    extended: true
 }));
 
-var server = app.listen(7777, function() {
+var server = app.listen(7775, function() {
    var port = server.address().port;
 
    console.log("Listening at %s", port);
 });
 
 app.get('/', function (req, res) {
-   return res.status(201).send({ message: 'hello' })
+   return res.status(200).send({ message: 'hello' })
+});
+
+//create a new record
+app.post("/cats", function(req, res) {
+   var params = req.body;
+   console.log('Inserted record: ', params);
+   connection.query('insert into Cats set ?', params, function(error, results, fields) {
+      if (error) throw error;
+      res.status(201).end(JSON.stringify(results));
+   });
 });
 
 //retreive all records
 app.get("/cats", function(req, res) {
    connection.query("select * from Cats", function (error, results, fields) {
       if (error) throw error;
-      res.status(201).end(JSON.stringify(results));
+      res.status(200).end(JSON.stringify(results));
    });
 });
 
