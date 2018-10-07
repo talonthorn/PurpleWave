@@ -20,7 +20,7 @@ app.use(bodyParser.urlencoded({
    extended: true
 }));
 
-var server = app.listen(7776, function() {
+var server = app.listen(7777, function() {
    var port = server.address().port;
 
    console.log("Listening at %s", port);
@@ -53,7 +53,11 @@ app.get("/cats/:id", function(req, res) {
    var params = req.params;
    connection.query("select * from Cats where Cindex=?", [params.id], function (error, results, fields) {
       if (error) throw error;
-      res.status(200).end(JSON.stringify(results));
+      if (results.length == 0) {
+         res.status(200).end('No records found');
+      } else {
+         res.status(200).end(JSON.stringify(results));
+      }
    });
 });
 
