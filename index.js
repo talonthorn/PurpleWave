@@ -20,21 +20,21 @@ app.use(bodyParser.urlencoded({
    extended: true
 }));
 
-var server = app.listen(7777, function() {
+var server = app.listen(7775, function() {
    var port = server.address().port;
 
    console.log("Listening at %s", port);
 });
 
 app.get('/', function (req, res) {
-   return res.status(201).send({ message: 'hello' })
+   return res.status(200).send({ message: 'hello' })
 });
 
-//create new record
+//create a new record
 app.post("/cats", function(req, res) {
    var params = req.body;
-   console.log(params);
-   connection.query("insert into Cats set", params, function (error, results, fields) {
+   console.log('Inserted record: ', params);
+   connection.query('insert into Cats set ?', params, function(error, results, fields) {
       if (error) throw error;
       res.status(201).end(JSON.stringify(results));
    });
