@@ -30,11 +30,21 @@ app.get('/', function (req, res) {
    return res.status(201).send({ message: 'hello' })
 });
 
+//create new record
+app.post("/cats", function(req, res) {
+   var params = req.body;
+   console.log(params);
+   connection.query("insert into Cats set", params, function (error, results, fields) {
+      if (error) throw error;
+      res.status(201).end(JSON.stringify(results));
+   });
+});
+
 //retreive all records
 app.get("/cats", function(req, res) {
    connection.query("select * from Cats", function (error, results, fields) {
       if (error) throw error;
-      res.status(201).end(JSON.stringify(results));
+      res.status(200).end(JSON.stringify(results));
    });
 });
 
