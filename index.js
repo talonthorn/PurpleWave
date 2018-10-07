@@ -12,7 +12,7 @@ const connection = config.db.get;
 
 connection.connect(function(err) {
    if (err) throw err
-   console.log("Connected to mySql.")
+   console.log("Connected to mySql")
 });
 
 app.use(bodyParser.json());
@@ -20,7 +20,7 @@ app.use(bodyParser.urlencoded({
    extended: true
 }));
 
-var server = app.listen(7775, function() {
+var server = app.listen(7777, function() {
    var port = server.address().port;
 
    console.log("Listening at %s", port);
@@ -56,4 +56,20 @@ app.get("/cats/:id", function(req, res) {
    });
 });
 
+//update a record
+app.put('/cats', function (req, res) {
+   connection. query('update Cats set Breed=?, Country=?, Origin=?, Coat=? where Cindex=?', [req.body.Breed, req.body.Country, req.body.Origin, req.body.Coat, req.body.Id], function (error, results, fields) {
+      if (error) throw error;
+      res.status(200).end(JSON.stringify(results));
+   });
+});
+
+//delete a record
+app.delete('/cats', function (req, res) {
+   console.log('Delete record: ', req.body);
+   connection.query('delete from Cats where Cindex=?', [req.params.Id], function (error, results, fields) {
+      if (error) throw error;
+      res.status(201).end('Record has been deleted.');
+   });
+});
 
