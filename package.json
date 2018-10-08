@@ -1,0 +1,24 @@
+{
+  "name": "interview7",
+  "version": "1.0.0",
+  "description": "Interview7 project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \\\"Error: no test specified\\\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/talonthorn/PurpleWave.git"
+  },
+  "author": "Kevin N. Weinhold",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/talonthorn/PurpleWave/issues"
+  },
+  "homepage": "https://github.com/talonthorn/PurpleWave#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.3",
+    "mysql": "^2.16.0"
+  }
+}
