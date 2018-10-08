@@ -52,12 +52,16 @@ app.get("/cats", function(req, res) {
 app.get("/cats/:id", function(req, res) {
    var params = req.params;
    connection.query("select * from Cats where Cindex=?", [params.id], function (error, results, fields) {
-      if (error) throw error;
-      if (results.length == 0) {
-         res.status(200).end('No records found');
-      } else {
-         res.status(200).end(JSON.stringify(results));
+      if (error) {
+         throw error;
       }
+
+      var status = 200;
+      if (results.length == 0) {
+         status = 204;
+      }
+
+      res.status(status).end(JSON.stringify(results));
    });
 });
 
