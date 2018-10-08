@@ -33,9 +33,23 @@ app.get('/', function (req, res) {
 //create a new record
 app.post("/cats", function(req, res) {
    var params = req.body;
-   console.log('Inserted record: ', params);
+   console.log('Insert record: ', params);
+
+   if (!params.Breed) {
+      return res.status(400).send({error:true, message:'Breed must have a value' });
+   }
    connection.query('insert into Cats set ?', params, function(error, results, fields) {
-      if (error) throw error;
+      if (error) {
+         if (error.code == 'ER_DUP_ENTRY') {
+            var msg = 'Entry already exists for Breed \"' + params.Breed + '\"';
+            console.log(msg);
+            return res.status(400).send({error:true, message:msg});
+         }
+
+         throw error;
+      }
+
+      console.log('Record inserted');
       res.status(201).end(JSON.stringify(results));
    });
 });
@@ -69,8 +83,17 @@ app.get("/cats/:id", function(req, res) {
 app.put('/cats', function (req, res) {
    var params = req.body;
    console.log("Update record ", params.id, ": Origin=", params.origin);
+
    connection. query('update Cats set Origin=? where Cindex=?', [params.origin, params.id], function (error, results, fields) {
       if (error) throw error;
+
+      if (results.affectedRows == 0) {
+         var msg = 'Record id ' + params.id + ' was not found';
+         console.log(msg);
+         return res.status(400).send({error:true, message:msg});
+      }
+
+      console.log('Updated');
       res.status(201).end(JSON.stringify(results));
    });
 });
@@ -79,9 +102,18 @@ app.put('/cats', function (req, res) {
 app.delete('/cats/:id', function (req, res) {
    var params = req.params;
    console.log('Delete record: ', params.id);
+   
    connection.query('delete from Cats where Cindex=?', [params.id], function (error, results, fields) {
+      
       if (error) throw error;
-      res.status(201).end('Record has been deleted.');
+
+      if (results.affectedRows > 0) {
+         res.status(201).end('Record has been deleted');
+         console.log('Record deleted');
+      } else {
+         res.status(400).end('Delete record was not found');
+         console.log('Delete record was not found');
+      }
    });
 });
 
